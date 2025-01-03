@@ -22,7 +22,9 @@ import Documents from "./Components/Document/Documents";
 import DocumentEditor from "./Components/Document/DocumentEditor";
 import UserDashboard from "./Pages/UserDashboard";
 import Stories from "./Components/Stories/Stories";
+import StoriesPage from "./Components/Stories/StoriesPage";
 import WriterPage from "./Components/Writer/WriterPage";
+import WriterDetails from "./Components/Writer/WriterDetails"; 
 
 const router = createBrowserRouter([
   {
@@ -87,8 +89,16 @@ const router = createBrowserRouter([
         element: <Stories />
       },
       {
+        path: 'stories/:id',
+        element: <StoriesPage /> 
+      },
+      {
         path: 'writer',
         element: <WriterPage />
+      },
+      {
+        path: 'writer/:id',
+        element: <WriterDetails /> // Added writer details page
       }
     ],
   },
