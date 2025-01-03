@@ -86,7 +86,7 @@ const Navbar = () => {
                                 text="Chat" 
                             />
                             <NavItem 
-                                to="home/texteditor" 
+                                to="/home/texteditor" 
                                 icon={<MdLeaderboard />} 
                                 text="Text Editor" 
                             />

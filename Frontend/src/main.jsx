@@ -53,7 +53,7 @@ const router = createBrowserRouter([
         element: <AdminDashboard />
       },
       {
-        path: "texteditor",
+        path: "texteditor/*",
         element: <TextEditorMain />,
       },
     ],
