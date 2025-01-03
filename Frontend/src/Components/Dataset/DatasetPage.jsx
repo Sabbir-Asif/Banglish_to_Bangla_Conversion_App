@@ -118,7 +118,7 @@ const DatasetPage = () => {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
+    <div className="flex h-screen w-full flex-col overflow-y-scroll bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
       {/* Header */}
       <div className="relative flex items-center justify-between border-b bg-white/80 px-8 py-4 backdrop-blur-lg">
         <div className="flex items-center gap-4">
@@ -161,7 +161,7 @@ const DatasetPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-hidden p-8">
+      <div className="flex-1 overflow-scroll p-8">
         <div className="mx-auto max-w-4xl">
           {activeTab === "upload" && (
             <div className="rounded-2xl bg-white p-6 shadow-lg">
@@ -263,7 +263,7 @@ const DatasetPage = () => {
                   </div>
 
                   {entries.length > 0 && (
-                    <div className="rounded-xl bg-gray-50/50 p-6">
+                    <div className="rounded-xl bg-gray-50/50 p-6 overflow-scroll">
                       <h3 className="mb-4 font-medium text-gray-700">Preview</h3>
                       <div className="max-h-64 space-y-3 overflow-y-auto">
                         {entries.slice(0, 5).map((entry, index) => (
