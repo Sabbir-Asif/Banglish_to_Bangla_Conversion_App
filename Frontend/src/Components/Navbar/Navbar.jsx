@@ -100,6 +100,11 @@ const Navbar = () => {
                                 icon={<MdLeaderboard />} 
                                 text="Stories" 
                             />
+                             <NavItem 
+                                to="/home/writer" 
+                                icon={<MdLeaderboard />} 
+                                text="Writer" 
+                            />
                             <NavItem 
                                 to="/home/Dataset" 
                                 icon={<MdInfo />} 
