@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Calendar, Share2, FileText, User, Plus, X } from 'lucide-react';
 import { AuthContext } from '../Authentication/AuthProvider';
 import axios from 'axios';
+import DocumentSearch from './DocumentSearch';
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
@@ -58,16 +59,8 @@ const Documents = () => {
     }
   };
   
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = async (queryParams) => {
     setIsSearching(true);
-    const queryParams = new URLSearchParams();
-    queryParams.append('owner', user._id);
-    
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) queryParams.append(key, value);
-    });
-
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/documents/search?${queryParams}`);
       setDocuments(Array.isArray(response.data) ? response.data : []);
@@ -151,96 +144,7 @@ const Documents = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="card bg-base-100 shadow-lg">
-          <div className="card-body">
-            <form onSubmit={handleSearch} className="space-y-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Search documents..."
-                    className="input input-bordered w-full"
-                    value={filters.searchTerm}
-                    onChange={(e) => setFilters({...filters, searchTerm: e.target.value})}
-                  />
-                </div>
-                <select
-                  className="select select-bordered"
-                  value={filters.status}
-                  onChange={(e) => setFilters({...filters, status: e.target.value})}
-                >
-                  <option value="">All Status</option>
-                  <option value="Draft">Draft</option>
-                  <option value="Published">Published</option>
-                </select>
-                <select
-                  className="select select-bordered"
-                  value={filters.isPublic}
-                  onChange={(e) => setFilters({...filters, isPublic: e.target.value})}
-                >
-                  <option value="">All Visibility</option>
-                  <option value="true">Public</option>
-                  <option value="false">Private</option>
-                </select>
-              </div>
-              
-              <div className="flex flex-col md:flex-row gap-4">
-                <input
-                  type="text"
-                  placeholder="Tags (comma separated)"
-                  className="input input-bordered flex-1"
-                  value={filters.tags}
-                  onChange={(e) => setFilters({...filters, tags: e.target.value})}
-                />
-                <input
-                  type="date"
-                  className="input input-bordered"
-                  value={filters.startDate}
-                  onChange={(e) => setFilters({...filters, startDate: e.target.value})}
-                />
-                <input
-                  type="date"
-                  className="input input-bordered"
-                  value={filters.endDate}
-                  onChange={(e) => setFilters({...filters, endDate: e.target.value})}
-                />
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <button 
-                  type="button"
-                  onClick={() => {
-                    setFilters({
-                      searchTerm: '',
-                      status: '',
-                      isPublic: '',
-                      tags: '',
-                      startDate: '',
-                      endDate: ''
-                    });
-                    fetchDocuments();
-                  }}
-                  className="btn btn-ghost gap-2"
-                >
-                  <X className="w-4 h-4" />
-                  Clear
-                </button>
-                <button 
-                  type="submit" 
-                  className="btn bg-orange-primary hover:bg-orange-secondary text-white border-none gap-2"
-                  disabled={isSearching}
-                >
-                  {isSearching ? (
-                    <span className="loading loading-spinner loading-sm"></span>
-                  ) : (
-                    <Search className="w-4 h-4" />
-                  )}
-                  Search
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <DocumentSearch onSearch={handleSearch} isLoading={isSearching} />
 
         {/* Document Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
