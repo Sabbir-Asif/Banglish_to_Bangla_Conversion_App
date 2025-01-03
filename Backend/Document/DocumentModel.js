@@ -26,27 +26,27 @@ const documentSchema = new Schema({
     },
     banglishContent: {
         type: String,
-        required: true
+        default: ''
     },
     banglaContent: {
         type: String,
-        required: true
+        default: ''
     },
     isPublic: {
         type: Boolean,
         default: false
     },
     pdfUrl: {
-        type: String
+        type: String,
+        default: 'xyz'
     },
     tags: [{
         type: String
     }]
 }, {
-    timestamps: true // This automatically adds createdAt and updatedAt fields
+    timestamps: true
 });
 
-// Add text indexes for search functionality
 documentSchema.index({
     title: 'text',
     caption: 'text',
