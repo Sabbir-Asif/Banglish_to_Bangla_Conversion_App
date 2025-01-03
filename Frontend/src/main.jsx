@@ -11,26 +11,43 @@ import SignUp from "./Pages/SIgnUp";
 import SignIn from "./Pages/SIgnIn";
 import ForgotPassword from "./Pages/ForgotPassword";
 import AuthProvider from "./Components/Authentication/AuthProvider";
+import Home from "./Pages/Home";
+import ChatPage from "./Components/Chat/ChatPage";
+import Banner from "./Components/Banner/Banner";
 
 
 const router = createBrowserRouter([
   {
     path: "/sign-up",
-    element: <SignUp />
+    element: <SignUp />,
   },
   {
     path: "/sign-in",
-    element: <SignIn />
+    element: <SignIn />,
   },
   {
-    path: '/forgot-password',
-    element: <ForgotPassword />
+    path: "/forgot-password",
+    element: <ForgotPassword />,
   },
   {
     path: "/",
     element: <LandingPage />,
-    errorElement: <ErrorPage />
-  }
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+    children: [
+      {
+        path: "banner",
+        element: <Banner />
+      },
+      {
+        path: "chat",
+        element: <ChatPage />,
+      },
+    ],
+  },
 ]);
 
 

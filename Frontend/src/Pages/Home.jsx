@@ -1,13 +1,15 @@
+import { Outlet } from "react-router";
 import Banner from "../Components/Banner/Banner";
 import Navbar from "../Components/Navbar/Navbar";
 
-const LandingPage = () => {
+const Home = () => {
+
     return (
         <div className="flex">
             <Navbar />
-            <Banner />
+            <Outlet />
         </div>
     );
 };
 
-export default LandingPage;
+export default Home;

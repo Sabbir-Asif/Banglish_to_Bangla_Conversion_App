@@ -45,7 +45,7 @@ const Navbar = () => {
                         </NavLink>
                     </div>
                     <div className="mt-16 flex flex-col gap-6">
-                        <NavLink to={'/'}>
+                        <NavLink to={'/home/banner'}>
                             <span className="flex justify-start items-center gap-2">
                                 <GoHomeFill className="text-2xl text-orange-secondary" />
                                 <p className="text-md text-orange-primary font-semibold">Home</p>
@@ -54,7 +54,7 @@ const Navbar = () => {
                         <span>
                             {
                                 user && <span className="flex flex-col gap-6">
-                                    <NavLink to={'/chat'}>
+                                    <NavLink to={'/home/chat'}>
                                         <span className="flex justify-start items-center gap-2">
                                             <TbMessageChatbotFilled className="text-2xl text-orange-secondary" />
                                             <p className="text-md text-orange-primary font-semibold">Chat</p>
