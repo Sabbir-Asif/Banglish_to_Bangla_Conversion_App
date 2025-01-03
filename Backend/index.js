@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoConnection = require('./util/mongoConnection');
 const users = require('./User/userRouter');
+const trainData = require('./TrainData/DataTableRouter');
+const tempData = require('./TempData/TempDataRoutes');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -23,6 +25,8 @@ mongoConnection();
 app.get('/', (req, res) => res.send('Server is running'));
 
 app.use('/api/users', users);
+app.use('/api/trainData', trainData);
+app.use('/api/tempData', tempData);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
