@@ -17,6 +17,7 @@ import Banner from "./Components/Banner/Banner";
 import AdminDashboard from "./Pages/AdminDashboard";
 import TextEditorMain from "./Components/TextEditor/TextEditorMain";
 import DatasetPage from "./Components/Dataset/DatasetPage";
+import Translator from "./Components/Translator/Translator";
 
 
 const router = createBrowserRouter([
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: 'Dataset',
         element: <DatasetPage />
+      },
+      {
+        path: 'translate',
+        element: <Translator />
       }
     ],
   },

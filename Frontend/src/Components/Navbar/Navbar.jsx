@@ -81,6 +81,11 @@ const Navbar = () => {
                     {user && (
                         <>
                             <NavItem 
+                                to="/home/translate" 
+                                icon={<TbMessageChatbotFilled />} 
+                                text="Translate" 
+                            />
+                            <NavItem 
                                 to="/home/chat" 
                                 icon={<TbMessageChatbotFilled />} 
                                 text="Chat" 
