@@ -12,6 +12,7 @@ import {
   Database,
   ArrowRight
 } from "lucide-react";
+import { saveAs } from "file-saver";
 
 const DatasetPage = () => {
   const { user } = useContext(AuthContext);
@@ -110,6 +111,32 @@ const DatasetPage = () => {
       setSuccess("Data submitted successfully");
       setCurrentEntry({ banglish: "", english: "", bangla: "" });
       setEntries([]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/api/trainData");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data for download");
+      }
+      const data = await response.json();
+      const csvHeader = "banglish,english,bangla\n";
+      const csvRows = data
+        .map(
+          (entry) =>
+            `${entry.banglish},${entry.english},${entry.bangla}`
+        )
+        .join("\n");
+      const csvContent = `${csvHeader}${csvRows}`;
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, "BanglaBridgeDataset.csv");
+      setSuccess("File downloaded successfully");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -314,8 +341,15 @@ const DatasetPage = () => {
           )}
 
           {activeTab === "download" && (
-            <div className="flex h-64 items-center justify-center rounded-2xl bg-white p-6 shadow-lg">
-              <p className="text-gray-500">Download functionality coming soon...</p>
+            <div className="flex gap-2 h-64 items-center justify-center rounded-2xl bg-white p-6 shadow-lg">
+              <p className="text-gray-700">File: BanglaBridgeDataset.csv</p>
+              <button
+                onClick={handleDownload}
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 text-white shadow-lg transition-all hover:brightness-110 disabled:opacity-50"
+              >
+                <Download className="h-5 w-5" />
+                Download
+              </button>
             </div>
           )}
         </div>

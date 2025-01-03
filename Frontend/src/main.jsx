@@ -21,6 +21,7 @@ import Translator from "./Components/Translator/Translator";
 import Documents from "./Components/Document/Documents";
 import DocumentEditor from "./Components/Document/DocumentEditor";
 import UserDashboard from "./Pages/UserDashboard";
+import Stories from "./Components/Stories/Stories";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: 'document/:id',
         element: <DocumentEditor />
+      },
+      {
+        path: 'stories',
+        element: <Stories />
       }
     ],
   },

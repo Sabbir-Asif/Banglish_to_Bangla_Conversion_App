@@ -34,7 +34,7 @@ const documentSchema = new Schema({
     },
     isPublic: {
         type: Boolean,
-        default: false
+        default: true
     },
     pdfUrl: {
         type: String,
