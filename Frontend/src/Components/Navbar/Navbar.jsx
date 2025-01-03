@@ -2,8 +2,12 @@ import React, { useContext, useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { FaAirbnb } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
-import { TbMessageChatbotFilled } from "react-icons/tb";
-import { MdLeaderboard, MdInfo, MdAdminPanelSettings } from "react-icons/md"; // Added MdAdminPanelSettings
+import { BiTransfer } from "react-icons/bi";
+import { BsChatDotsFill } from "react-icons/bs";
+import { MdEditDocument, MdAdminPanelSettings, MdDashboard } from "react-icons/md";
+import { IoBookSharp } from "react-icons/io5";
+import { RiQuillPenFill } from "react-icons/ri";
+import { BiData } from "react-icons/bi";
 import { AuthContext } from '../Authentication/AuthProvider';
 import Profile from "./Profile";
 
@@ -82,32 +86,32 @@ const Navbar = () => {
                         <>
                             <NavItem 
                                 to="/home/translate" 
-                                icon={<TbMessageChatbotFilled />} 
+                                icon={<BiTransfer />} 
                                 text="Translate" 
                             />
                             <NavItem 
                                 to="/home/chat" 
-                                icon={<TbMessageChatbotFilled />} 
+                                icon={<BsChatDotsFill />} 
                                 text="Chat" 
                             />
                             <NavItem 
                                 to="/home/documents" 
-                                icon={<MdLeaderboard />} 
+                                icon={<MdEditDocument />} 
                                 text="Text Editor" 
                             />
                             <NavItem 
                                 to="/home/stories" 
-                                icon={<MdLeaderboard />} 
+                                icon={<IoBookSharp />} 
                                 text="Stories" 
                             />
-                             <NavItem 
+                            <NavItem 
                                 to="/home/writer" 
-                                icon={<MdLeaderboard />} 
+                                icon={<RiQuillPenFill />} 
                                 text="Writer" 
                             />
                             <NavItem 
                                 to="/home/Dataset" 
-                                icon={<MdInfo />} 
+                                icon={<BiData />} 
                                 text="Dataset" 
                             />
                             {user.role === 'admin' && (
@@ -119,13 +123,12 @@ const Navbar = () => {
                             )}
                             <NavItem 
                                 to="/home/userDashboard" 
-                                icon={<MdInfo />} 
+                                icon={<MdDashboard />} 
                                 text="User Dashboard" 
                             />
                         </>
                     )}
 
-                    {/* Rest of the component remains the same */}
                     {/* Profile Button */}
                     {user && (
                         <button 
