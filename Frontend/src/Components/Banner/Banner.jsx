@@ -25,7 +25,7 @@ const Banner = () => {
 
   // Typing animation text
   useEffect(() => {
-    const texts = ['Hello!', 'আসসালামুয়ালাইকুম!', 'Write in Banglish...', 'Get Beautiful Bangla!'];
+    const texts = ['Hello!', 'আসসালামুয়ালাইকুম!', 'Write in Banglish...', 'Get Beautiful Bangla!', 'চলো এক্সপ্লোর করি...'];
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
