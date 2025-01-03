@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { FaAirbnb } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { TbMessageChatbotFilled } from "react-icons/tb";
-import { MdLeaderboard, MdInfo } from "react-icons/md";
+import { MdLeaderboard, MdInfo, MdAdminPanelSettings } from "react-icons/md"; // Added MdAdminPanelSettings
 import { AuthContext } from '../Authentication/AuthProvider';
 import Profile from "./Profile";
 
@@ -90,9 +90,17 @@ const Navbar = () => {
                                 icon={<MdLeaderboard />} 
                                 text="Records" 
                             />
+                            {user.role === 'admin' && (
+                                <NavItem 
+                                    to="/home/adminDashboard" 
+                                    icon={<MdAdminPanelSettings />} 
+                                    text="Admin Dashboard" 
+                                />
+                            )}
                         </>
                     )}
 
+                    {/* Rest of the component remains the same */}
                     {/* Profile Button */}
                     {user && (
                         <button 
