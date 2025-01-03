@@ -17,8 +17,10 @@ import {
   CheckCircle2,
   User2
 } from 'lucide-react';
-import { jsPDF } from 'jspdf';
 import BanglishEditor from './BanglishEditor';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import kalpurushFont from '/kalpurush.ttf';
 
 const genAI = new GoogleGenerativeAI("AIzaSyBXwV9V-IBKqnBMEryEvbKA0OXp43VDr3I");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -28,6 +30,7 @@ const DocumentEditor = () => {
   const [socket, setSocket] = useState(null);
   const [document, setDocument] = useState(null);
   const [content, setContent] = useState({ banglish: '', bangla: '' });
+  const [spellCheckedbanglish, setSpellCheckedbanglish] = useState('');
   const [collaborators, setCollaborators] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -101,38 +104,103 @@ const DocumentEditor = () => {
     fetchDocument();
   }, [id]);
 
-   const downloadAsPDF = () => {
-      const doc = new jsPDF();
-      
-      // Configure Bengali font
-      
-      doc.setFont('times', 'normal');
-      doc.setFontSize(12);
-      
-      // Add title
-      if (document.title) {
-        doc.setFontSize(16);
-        doc.text(document.title, 20, 20);
-        doc.setFontSize(12);
+  const downloadAsPDF = () => {
+    // Create a temporary div for rendering
+    const contentDiv = window.document.createElement('div');
+    contentDiv.style.fontFamily = 'Kalpurush';
+    contentDiv.style.padding = '40px';
+    contentDiv.style.width = '210mm'; // A4 width
+    contentDiv.style.background = '#ffffff'; // Using hex instead of potential OKLCH
+    
+    // Populate the div with content using web-safe colors
+    contentDiv.innerHTML = `
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h1 style="font-size: 24px; margin-bottom: 10px; color: #000000;">${document.title || ''}</h1>
+        <p style="font-size: 16px; color: #666666;">${document.caption || ''}</p>
+      </div>
+      <div style="font-size: 14px; line-height: 1.6; color: #000000;">
+        ${document.banglaContent || ''}
+      </div>
+      <div style="margin-top: 20px; font-size: 12px; color: #666666;">
+        <p>লেখক: ${document.owner?.displayName || 'অজানা'}</p>
+        <p>তারিখ: ${new Date().toLocaleDateString('bn-BD')}</p>
+        ${document.tags?.length ? `<p>ট্যাগ: ${document.tags.join(', ')}</p>` : ''}
+      </div>
+    `;
+
+    // Force all elements to use web-safe colors
+    const elements = contentDiv.getElementsByTagName('*');
+    for (let element of elements) {
+        const computedStyle = window.getComputedStyle(element);
+        if (computedStyle.color.includes('oklch')) {
+            element.style.color = '#000000';
+        }
+        if (computedStyle.backgroundColor && computedStyle.backgroundColor.includes('oklch')) {
+            element.style.backgroundColor = '#ffffff';
+        }
+    }
+  
+    // Add to document temporarily
+    window.document.body.appendChild(contentDiv);
+  
+    // Load Bangla font
+    const font = new FontFace('Kalpurush', `url(${kalpurushFont})`);
+    font.load().then(() => {
+      window.document.fonts.add(font);
+      window.document.fonts.ready.then(() => {
+        // Generate PDF with explicit background color
+        html2canvas(contentDiv, {
+          scale: 2,
+          useCORS: true,
+          windowWidth: 210 * 4.16667, // A4 width in pixels
+          windowHeight: 297 * 4.16667, // A4 height in pixels
+          letterRendering: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff', // Explicit background color
+          removeContainer: true, // Automatically remove the temporary element
+          onclone: (clonedDoc) => {
+            // Force all colors in the cloned document to be web-safe
+            const allElements = clonedDoc.getElementsByTagName('*');
+            for (let element of allElements) {
+              element.style.color = element.style.color || '#000000';
+              element.style.backgroundColor = element.style.backgroundColor || '#ffffff';
+            }
+          }
+        }).then(canvas => {
+          // Convert to PDF
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  
+          // Add content to PDF
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  
+          // Save the PDF
+          pdf.save(`${document.title || 'document'}.pdf`);
+  
+          // Cleanup
+          if (window.document.body.contains(contentDiv)) {
+            window.document.body.removeChild(contentDiv);
+          }
+        }).catch(error => {
+          console.error('Error generating PDF:', error);
+          if (window.document.body.contains(contentDiv)) {
+            window.document.body.removeChild(contentDiv);
+          }
+        });
+      });
+    }).catch(error => {
+      console.error('Error loading font:', error);
+      if (window.document.body.contains(contentDiv)) {
+        window.document.body.removeChild(contentDiv);
       }
-      
-      // Add caption
-      if (document.caption) {
-        doc.text(document.caption, 20, 30);
-      }
-      
-      // Add content with line breaks
-      const splitText = doc.splitTextToSize(content.bangla, 170);
-      doc.text(splitText, 20, 40);
-      
-      // Add metadata
-      const today = new Date().toLocaleDateString();
-      doc.setFontSize(10);
-      doc.text(`Generated on: ${today}`, 20, doc.internal.pageSize.height - 20);
-      
-      // Download the PDF
-      doc.save(`${document.title || 'document'}.pdf`);
-    };
+    });
+};
+    const cleanText = (text) => {
+        // This regex removes HTML tags and keeps the plain text
+        return text.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      };
 
   // Translation function
   const translateToBangla = async (banglishText) => {
@@ -153,7 +221,8 @@ const DocumentEditor = () => {
       const text = response.text();
       const validJsonString = text.replace(/(\w+):/g, '"$1":');
       const parsedResponse = JSON.parse(validJsonString);
-      return parsedResponse.bangla;
+      const cleanedText = cleanText(parsedResponse.bangla)
+      return cleanedText;
     } catch (error) {
       throw new Error("Translation failed: " + error.message);
     }
@@ -325,7 +394,7 @@ const DocumentEditor = () => {
   if (!document) return <div className="loading loading-lg"></div>;
 
   return (
-    <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
+    <div className="flex h-screen w-full flex-col overflow-y-scroll bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
       {/* Header */}
       <div className="relative flex items-center justify-between border-b bg-white/80 px-8 py-4 backdrop-blur-lg">
         <div className="flex items-center gap-4">
@@ -460,7 +529,7 @@ const DocumentEditor = () => {
               </div>
             </div>
             
-            <div className="flex-1 p-6">
+            <div className="flex-1 p-6 overflow-y-scroll">
               <BanglishEditor 
                 content={content} 
                 onContentChange={handleContentChange}

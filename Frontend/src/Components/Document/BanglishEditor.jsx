@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import Quill from 'quill';
 import debounce from 'lodash/debounce';
 import 'quill/dist/quill.snow.css';
+import SpellChecker from './SpellChecker'; // Import the SpellChecker component
 
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'],
@@ -19,6 +20,7 @@ const toolbarOptions = [
 
 const BanglishEditor = ({ content, onContentChange }) => {
   const [quill, setQuill] = useState(null);
+  const [text, setText] = useState(content.banglish); // Store the content in the editor
   const changeRef = useRef(null);
 
   const debouncedChange = useCallback(
@@ -33,10 +35,10 @@ const BanglishEditor = ({ content, onContentChange }) => {
     wrapper.innerHTML = '';
     const editor = document.createElement('div');
     wrapper.append(editor);
-    
+
     const quillInstance = new Quill(editor, {
       theme: 'snow',
-      modules: { 
+      modules: {
         toolbar: toolbarOptions,
         history: {
           delay: 1000,
@@ -45,7 +47,7 @@ const BanglishEditor = ({ content, onContentChange }) => {
       },
       placeholder: 'Write in Banglish...',
     });
-    
+
     setQuill(quillInstance);
   }, []);
 
@@ -55,6 +57,7 @@ const BanglishEditor = ({ content, onContentChange }) => {
     const handleChange = () => {
       const content = quill.root.innerHTML;
       debouncedChange(content);
+      setText(content); // Update the text content in the editor
     };
 
     quill.on('text-change', handleChange);
@@ -64,12 +67,14 @@ const BanglishEditor = ({ content, onContentChange }) => {
   useEffect(() => {
     if (quill && content.banglish !== quill.root.innerHTML) {
       quill.root.innerHTML = content.banglish;
+      setText(content.banglish); // Update the content when `content.banglish` changes
     }
   }, [content.banglish, quill]);
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-y-scroll">
       <div className="h-96 border rounded-lg" ref={wrapperRef} />
+      <SpellChecker query={text} /> {/* Pass the editor's content to the SpellChecker */}
     </div>
   );
 };
