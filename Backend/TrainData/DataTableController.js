@@ -49,14 +49,23 @@ exports.getEntryById = async (req, res) => {
 exports.createEntry = async (req, res) => {
     try {
         const { banglish, english, bangla } = req.body;
+
+        // Validate the request body
+        if (!banglish || !english || !bangla) {
+            return res.status(400).json({ message: 'All fields (banglish, english, bangla) are required.' });
+        }
+
+        // Create and save the new entry
         const newEntry = new DataTable({ banglish, english, bangla });
         const savedEntry = await newEntry.save();
+
         res.status(201).json(savedEntry);
     } catch (error) {
-        console.error(error);
-        res.status(400).json({ message: 'Failed to create entry' });
+        console.error('Error creating entry:', error);
+        res.status(500).json({ message: 'Failed to create entry' });
     }
 };
+
 
 exports.updateEntry = async (req, res) => {
     try {

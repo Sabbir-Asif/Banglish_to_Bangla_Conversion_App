@@ -14,20 +14,30 @@ exports.getAllTempData = async (req, res) => {
 // Search temp data entries
 exports.searchTempData = async (req, res) => {
     try {
-        const { keyword } = req.query;
-        const entries = await TempData.find({
-            $or: [
+        const { keyword, status } = req.query; // Extract keyword and status from query params
+        const query = {};
+
+        // Add status filter if provided
+        if (status) {
+            query.status = status;
+        }
+
+        // Add keyword filter if provided
+        if (keyword) {
+            query.$or = [
                 { 'data.banglish': { $regex: keyword, $options: 'i' } },
                 { 'data.english': { $regex: keyword, $options: 'i' } },
                 { 'data.bangla': { $regex: keyword, $options: 'i' } }
-            ]
-        }).populate('user');
+            ];
+        }
+
+        const entries = await TempData.find(query).populate('user'); // Execute the query
 
         if (entries.length === 0) {
             return res.status(404).json({ message: 'No entries found matching the criteria' });
         }
 
-        res.status(200).json(entries);
+        res.status(200).json(entries); // Return the filtered entries
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to search entries' });
