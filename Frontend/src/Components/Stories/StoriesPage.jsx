@@ -17,7 +17,7 @@ const StoryPage = () => {
     const fetchDocument = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/api/documents/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`);
         if (!response.ok) throw new Error("Failed to fetch story");
         const data = await response.json();
         setDocument(data);

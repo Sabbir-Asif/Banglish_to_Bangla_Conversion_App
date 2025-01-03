@@ -25,7 +25,7 @@ const PendingDataPage = () => {
   const fetchAllData = async () => {
     try {
       setInitialLoading(true);
-      const response = await fetch("http://localhost:3000/api/tempData/search");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tempData/search`);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       setAllData(data);

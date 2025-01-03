@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
 
   const fetchUserData = async (email) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/users/search?email=${email}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/search?email=${email}`);
       const data = await res.json();
       return data.length > 0 ? data[0] : null;
     } catch (error) {

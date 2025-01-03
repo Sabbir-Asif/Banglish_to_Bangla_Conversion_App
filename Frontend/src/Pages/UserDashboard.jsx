@@ -21,7 +21,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/tempData/search?user=${user._id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tempData/search?user=${user._id}`);
         const data = await response.json();
         
         const stats = data.reduce((acc, item) => {
@@ -45,7 +45,7 @@ const UserDashboard = () => {
 
     const fetchUserDocuments = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/documents/search?owner=${user._id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents/search?owner=${user._id}`);
         const data = await response.json();
         setUserDocuments(data);
       } catch (error) {

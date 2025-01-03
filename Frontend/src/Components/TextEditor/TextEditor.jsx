@@ -24,7 +24,7 @@ export default function TextEditor() {
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    const s = io("http://localhost:3001")
+    const s = io(import.meta.env.VITE_API_URL)
     setSocket(s)
 
     return () => {

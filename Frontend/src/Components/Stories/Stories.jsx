@@ -14,7 +14,7 @@ const Stories = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:3000/api/documents?status=Published');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents?status=Published`);
             if (!response.ok) throw new Error('Failed to fetch documents');
             const data = await response.json();
             const publishedDocs = data.filter((doc) => doc.status === 'Published');

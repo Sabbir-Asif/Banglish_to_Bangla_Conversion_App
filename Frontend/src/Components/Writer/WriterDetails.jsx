@@ -18,8 +18,8 @@ const WriterDetails = () => {
       try {
         setIsLoading(true);
         const [writerRes, storiesRes] = await Promise.all([
-          fetch(`http://localhost:3000/api/users/${id}`),
-          fetch(`http://localhost:3000/api/documents/search?owner=${id}`)
+          fetch(`${import.meta.env.VITE_API_URL}/api/users/${id}`),
+          fetch(`${import.meta.env.VITE_API_URL}/api/documents/search?owner=${id}`)
         ]);
 
         if (!writerRes.ok) throw new Error('Failed to fetch writer details');

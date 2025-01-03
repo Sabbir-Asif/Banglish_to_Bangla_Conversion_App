@@ -13,7 +13,7 @@ const Profile = ({ user, setUser, setIsDrawerOpen }) => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:3000/api/users/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/${user._id}`,
         {
           displayName: user.displayName,
           email: user.email,

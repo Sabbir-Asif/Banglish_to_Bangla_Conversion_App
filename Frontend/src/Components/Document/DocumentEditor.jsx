@@ -43,7 +43,7 @@ const DocumentEditor = () => {
 
   // Initialize socket connection
   useEffect(() => {
-    const newSocket = io('http://localhost:3000');
+    const newSocket = io(import.meta.env.VITE_API_URL);
     setSocket(newSocket);
 
     if (newSocket) {
@@ -89,7 +89,7 @@ const DocumentEditor = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/documents/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/documents/${id}`);
         setDocument(response.data);
         setContent({
           banglish: response.data.banglishContent,
@@ -260,7 +260,7 @@ const DocumentEditor = () => {
         setContent(updatedContent);
 
         // Save to backend
-        await axios.patch(`http://localhost:3000/api/documents/${id}`, {
+        await axios.patch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, {
           banglishContent: updatedContent.banglish,
           banglaContent: translatedText
         });
@@ -333,7 +333,7 @@ const DocumentEditor = () => {
         const caption = response.text();
         
         // Update document with new caption
-        await axios.patch(`http://localhost:3000/api/documents/${id}`, {
+        await axios.patch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, {
           caption: caption
         });
         
@@ -365,7 +365,7 @@ const DocumentEditor = () => {
       const title = response.text();
       
       // Update document with new title
-      await axios.patch(`http://localhost:3000/api/documents/${id}`, {
+      await axios.patch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, {
         title: title
       });
       
@@ -378,7 +378,7 @@ const DocumentEditor = () => {
   };
    const handleUpdateDocument = async (updates) => {
       try {
-        const response = await axios.patch(`http://localhost:3000/api/documents/${id}`, updates);
+        const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, updates);
         setDocument(response.data);
         setIsEditing(false);
       } catch (error) {

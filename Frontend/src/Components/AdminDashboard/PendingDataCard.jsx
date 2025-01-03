@@ -18,7 +18,7 @@ const PendingDataCard = ({ dataItem, onStatusChange }) => {
     const handleApproval = async () => {
         try {
             for (const entry of dataItem.data) {
-                const response = await fetch('http://localhost:3000/api/trainData', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}api/trainData`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -33,7 +33,7 @@ const PendingDataCard = ({ dataItem, onStatusChange }) => {
                 }
             }
     
-            const updateResponse = await fetch(`http://localhost:3000/api/tempData/${dataItem._id}`, {
+            const updateResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/tempData/${dataItem._id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'approved' }),
@@ -51,7 +51,7 @@ const PendingDataCard = ({ dataItem, onStatusChange }) => {
 
     const handleDecline = async () => {
         try {
-            await fetch(`http://localhost:3000/api/tempData/${dataItem._id}`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/tempData/${dataItem._id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: 'declined' }),
