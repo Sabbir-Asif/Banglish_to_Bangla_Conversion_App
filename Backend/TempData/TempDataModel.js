@@ -26,7 +26,8 @@ const tempDataSchema = new Schema({
     status: {
         type: String,
         enum: ['approved', 'pending', 'declined'],
-        required: true
+        required: true,
+        default: 'pending'
     },
     lastModified: {
         type: Date,

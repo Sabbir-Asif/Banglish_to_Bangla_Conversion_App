@@ -16,6 +16,7 @@ import ChatPage from "./Components/Chat/ChatPage";
 import Banner from "./Components/Banner/Banner";
 import AdminDashboard from "./Pages/AdminDashboard";
 import TextEditorMain from "./Components/TextEditor/TextEditorMain";
+import DatasetPage from "./Components/Dataset/DatasetPage";
 
 
 const router = createBrowserRouter([
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
         path: "texteditor/*",
         element: <TextEditorMain />,
       },
+      {
+        path: 'Dataset',
+        element: <DatasetPage />
+      }
     ],
   },
 ]);
