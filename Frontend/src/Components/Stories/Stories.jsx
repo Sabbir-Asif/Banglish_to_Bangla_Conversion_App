@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, X, Calendar, User, Tag } from 'lucide-react';
 import StoriesCard from './StoriesCard';
 
 const Stories = () => {
@@ -8,8 +8,8 @@ const Stories = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTag, setActiveTag] = useState(null);
 
-    // Fetch all published documents on component mount
     const fetchDocuments = async () => {
         setLoading(true);
         setError(null);
@@ -18,7 +18,6 @@ const Stories = () => {
             if (!response.ok) throw new Error('Failed to fetch documents');
             const data = await response.json();
             const publishedDocs = data.filter((doc) => doc.status === 'Published');
-
             setDocuments(publishedDocs);
             setFilteredDocuments(publishedDocs);
         } catch (err) {
@@ -32,87 +31,136 @@ const Stories = () => {
         fetchDocuments();
     }, []);
 
-    // Handle search input and filter results
     const handleSearch = (e) => {
         const query = e.target.value;
         setSearchTerm(query);
+        filterDocuments(query, activeTag);
+    };
 
-        if (!query.trim()) {
-            setFilteredDocuments(documents); // Reset to all documents if search is cleared
-            return;
+    const filterDocuments = (query, tag) => {
+        let filtered = documents;
+        
+        if (query.trim()) {
+            const regex = new RegExp(query, 'i');
+            filtered = filtered.filter(
+                (doc) =>
+                    regex.test(doc.title) ||
+                    regex.test(doc.caption) ||
+                    regex.test(doc.banglishContent) ||
+                    regex.test(doc.banglaContent) ||
+                    (doc.tags && doc.tags.some((tag) => regex.test(tag)))
+            );
         }
 
-        const regex = new RegExp(query, 'i');
-        const filtered = documents.filter(
-            (doc) =>
-                regex.test(doc.title) ||
-                regex.test(doc.caption) ||
-                regex.test(doc.banglishContent) ||
-                regex.test(doc.banglaContent) ||
-                (doc.tags && doc.tags.some((tag) => regex.test(tag)))
-        );
+        if (tag) {
+            filtered = filtered.filter(doc => doc.tags && doc.tags.includes(tag));
+        }
+
         setFilteredDocuments(filtered);
     };
 
+    const handleTagClick = (tag) => {
+        const newTag = tag === activeTag ? null : tag;
+        setActiveTag(newTag);
+        filterDocuments(searchTerm, newTag);
+    };
+
+    const getAllTags = () => {
+        const tagSet = new Set();
+        documents.forEach(doc => {
+            doc.tags?.forEach(tag => tagSet.add(tag));
+        });
+        return Array.from(tagSet);
+    };
+
     return (
-        <div className="container mx-auto px-4 py-8">
-            {/* Search Bar */}
-            <div className="mb-8">
-                <div className="form-control">
-                    <div className="input-group">
+        <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
+            <div className="container mx-auto px-4 py-12">
+                {/* Header Section */}
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-bold text-orange-primary mb-4 font-exo">Featured Stories</h1>
+                    <p className="text-gray-600 max-w-2xl mx-auto font-poppins">
+                        Discover inspiring stories and experiences shared by our community
+                    </p>
+                </div>
+
+                {/* Search and Filter Section */}
+                <div className="mb-8 max-w-4xl mx-auto">
+                    <div className="relative">
                         <input
                             type="text"
                             placeholder="Search stories..."
-                            className="input input-bordered w-full"
+                            className="w-full px-6 py-4 border border-gray-200 rounded-lg pl-12 focus:outline-none focus:ring-2 focus:ring-orange-secondary font-poppins"
                             value={searchTerm}
                             onChange={handleSearch}
                         />
-                        <button className="btn btn-square btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        {searchTerm && (
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    filterDocuments('', activeTag);
+                                }}
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                            >
+                                <X className="text-gray-400 hover:text-orange-primary" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Tags Filter */}
+                    <div className="flex flex-wrap gap-2 mt-4">
+                        {getAllTags().map((tag) => (
+                            <button
+                                key={tag}
+                                onClick={() => handleTagClick(tag)}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                    activeTag === tag
+                                        ? 'bg-orange-primary text-white'
+                                        : 'bg-white text-gray-600 hover:bg-orange-secondary hover:text-white'
+                                } font-poppins`}
+                            >
+                                {tag}
+                            </button>
+                        ))}
                     </div>
                 </div>
+
+                {/* Loading State */}
+                {loading && (
+                    <div className="flex justify-center items-center min-h-[400px]">
+                        <div className="w-16 h-16 border-4 border-orange-secondary border-t-orange-primary rounded-full animate-spin"></div>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {!loading && error && (
+                    <div className="text-center py-12">
+                        <div className="bg-red-50 text-red-600 p-4 rounded-lg inline-block">
+                            {error}
+                        </div>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!loading && !error && filteredDocuments.length === 0 && (
+                    <div className="text-center py-16">
+                        <h3 className="text-2xl font-bold text-gray-700 mb-2 font-exo">No stories found</h3>
+                        <p className="text-gray-500 font-poppins">Try adjusting your search or filter criteria</p>
+                    </div>
+                )}
+
+                {/* Stories Grid */}
+                {!loading && !error && filteredDocuments.length > 0 && (
+                    <div className="flex flex-wrap items-center justify-center md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredDocuments.map((doc) => (
+                            <StoriesCard key={doc._id} document={doc} />
+                        ))}
+                    </div>
+                )}
             </div>
-
-            {/* Loading Indicator */}
-            {loading && (
-                <div className="min-h-screen flex items-center justify-center">
-                    <span className="loading loading-spinner loading-lg text-primary"></span>
-                </div>
-            )}
-
-            {/* Error Message */}
-            {!loading && error && (
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="alert alert-error">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>{error}</span>
-                    </div>
-                </div>
-            )}
-
-            {/* No Results */}
-            {!loading && !error && filteredDocuments.length === 0 && (
-                <div className="text-center py-10">
-                    <h3 className="text-2xl font-semibold text-gray-600">No stories found</h3>
-                    <p className="text-gray-400 mt-2">Try adjusting your search terms</p>
-                </div>
-            )}
-
-            {/* Stories Grid */}
-            {!loading && !error && filteredDocuments.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredDocuments.map((doc) => (
-                        <StoriesCard key={doc._id} document={doc} />
-                    ))}
-                </div>
-            )}
         </div>
-  );
+    );
 };
 
 export default Stories;
