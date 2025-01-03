@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import debounce from 'lodash/debounce';
 
 const DocumentEditor = () => {
   const { id } = useParams();
@@ -10,9 +9,8 @@ const DocumentEditor = () => {
   const [document, setDocument] = useState(null);
   const [content, setContent] = useState({ banglish: '', bangla: '' });
   const [collaborators, setCollaborators] = useState([]);
-  const [showCollaboratorModal, setShowCollaboratorModal] = useState(false);
-  const [newCollaborator, setNewCollaborator] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem('user'));
 
   // Initialize socket connection
@@ -20,15 +18,12 @@ const DocumentEditor = () => {
     const newSocket = io('http://localhost:3000');
     setSocket(newSocket);
 
-    return () => newSocket.disconnect();
-  }, []);
+    // Join the document room
+    if (newSocket) {
+      newSocket.emit('join-document', id);
 
-  // Join document room when socket is ready
-  useEffect(() => {
-    if (socket) {
-      socket.emit('join-document', id);
-
-      socket.on('receive-changes', (data) => {
+      // Listen for changes from other collaborators
+      newSocket.on('receive-changes', (data) => {
         if (data.userId !== currentUser._id) {
           setContent(prevContent => ({
             ...prevContent,
@@ -36,10 +31,17 @@ const DocumentEditor = () => {
           }));
         }
       });
-    }
-  }, [socket, id]);
 
-  // Fetch document data
+      // Listen for document saved event
+      newSocket.on('document-saved', (updatedDocument) => {
+        setDocument(updatedDocument);
+      });
+    }
+
+    return () => newSocket.disconnect();
+  }, [id]);
+
+  // Fetch document data from backend
   useEffect(() => {
     const fetchDocument = async () => {
       try {
@@ -58,20 +60,26 @@ const DocumentEditor = () => {
     fetchDocument();
   }, [id]);
 
-  // Debounced save function
-  const saveDocument = useCallback(
-    debounce(async (newContent) => {
-      try {
-        await axios.patch(`http://localhost:3000/api/documents/${id}`, {
-          banglishContent: newContent.banglish,
-          banglaContent: newContent.bangla
-        });
-      } catch (error) {
-        console.error('Error saving document:', error);
-      }
-    }, 1000),
-    [id]
-  );
+  // Save document function
+  const saveDocument = async (newContent) => {
+    setIsSaving(true); // Set saving status
+    try {
+      await axios.patch(`http://localhost:3000/api/documents/${id}`, {
+        banglishContent: newContent.banglish,
+        banglaContent: newContent.bangla
+      });
+
+      // Emit save document event to backend
+      socket.emit('save-document', {
+        documentId: id,
+        content: newContent
+      });
+      setIsSaving(false);
+    } catch (error) {
+      console.error('Error saving document:', error);
+      setIsSaving(false);
+    }
+  };
 
   const handleContentChange = (field, value) => {
     const newContent = {
@@ -80,7 +88,7 @@ const DocumentEditor = () => {
     };
     setContent(newContent);
 
-    // Emit changes to other users
+    // Emit changes to other users in real-time
     socket.emit('document-change', {
       documentId: id,
       userId: currentUser._id,
@@ -88,25 +96,9 @@ const DocumentEditor = () => {
       content: value
     });
 
-    // Save changes to database
-    saveDocument(newContent);
-  };
-
-  const handleAddCollaborator = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.get(`http://localhost:3000/api/users/search?email=${newCollaborator}`);
-      if (response.data.length > 0) {
-        const newCollaboratorId = response.data[0]._id;
-        const updatedDocument = await axios.patch(`${import.meta.env.VITE_API_URL}/api/documents/${id}`, {
-          collaborators: [...collaborators.map(c => c._id), newCollaboratorId]
-        });
-        setCollaborators(updatedDocument.data.collaborators);
-        setNewCollaborator('');
-        setShowCollaboratorModal(false);
-      }
-    } catch (error) {
-      console.error('Error adding collaborator:', error);
+    // Automatically save the content periodically
+    if (!isSaving) {
+      saveDocument(newContent);
     }
   };
 
@@ -118,6 +110,11 @@ const DocumentEditor = () => {
     } catch (error) {
       console.error('Error updating document:', error);
     }
+  };
+
+  // Button click to manually trigger save
+  const handleSaveButtonClick = () => {
+    saveDocument(content);
   };
 
   if (!document) return <div className="loading loading-lg"></div>;
@@ -188,30 +185,9 @@ const DocumentEditor = () => {
               >
                 Edit Details
               </button>
-              <button
-                onClick={() => setShowCollaboratorModal(true)}
-                className="btn btn-secondary"
-              >
-                Add Collaborator
-              </button>
             </div>
           </div>
         )}
-      </div>
-
-      {/* Collaborators */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Collaborators</h2>
-        <div className="flex flex-wrap gap-2">
-          <div className="badge badge-success gap-2">
-            {document.owner.displayName} (Owner)
-          </div>
-          {collaborators.map((collaborator) => (
-            <div key={collaborator._id} className="badge badge-info gap-2">
-              {collaborator.displayName}
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Editor */}
@@ -241,40 +217,16 @@ const DocumentEditor = () => {
         </div>
       </div>
 
-      {/* Add Collaborator Modal */}
-      {showCollaboratorModal && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">Add Collaborator</h3>
-            <form onSubmit={handleAddCollaborator}>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Collaborator Email</span>
-                </label>
-                <input
-                  type="email"
-                  value={newCollaborator}
-                  onChange={(e) => setNewCollaborator(e.target.value)}
-                  className="input input-bordered"
-                  required
-                />
-              </div>
-              <div className="modal-action">
-                <button type="submit" className="btn btn-primary">
-                  Add
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => setShowCollaboratorModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Save Button */}
+      <div className="mt-4">
+        <button
+          onClick={handleSaveButtonClick}
+          className={`btn btn-success ${isSaving ? 'loading' : ''}`}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </div>
   );
 };
