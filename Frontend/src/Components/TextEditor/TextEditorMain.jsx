@@ -17,11 +17,11 @@ const TextEditorMain = () => {
   }, [documentId, navigate])
 
   return (
-    <div className="h-full">
+    <div className="h-full w-full">
       <Routes>
         <Route 
-          path="/home" 
-          element={<Navigate to={`/texteditor/documents/${uuidV4()}`} replace />} 
+          path="/" 
+          element={<Navigate to={`/home/texteditor/documents/${uuidV4()}`} replace />} 
         />
         <Route 
           path="/documents/:id" 

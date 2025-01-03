@@ -21,6 +21,7 @@ export default function TextEditor() {
   const { id: documentId } = useParams()
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     const s = io("http://localhost:3001")
@@ -46,7 +47,9 @@ export default function TextEditor() {
     if (socket == null || quill == null) return
 
     const interval = setInterval(() => {
+      setIsSaving(true)
       socket.emit("save-document", quill.getContents())
+      setTimeout(() => setIsSaving(false), 1000)
     }, SAVE_INTERVAL_MS)
 
     return () => {
@@ -95,5 +98,100 @@ export default function TextEditor() {
     q.setText("Loading...")
     setQuill(q)
   }, [])
-  return <div className="container" ref={wrapperRef}></div>
+
+  return (
+    <div className="min-h-screen bg-base-100 w-full">
+      <div className="navbar bg-base-200 shadow-md px-4">
+        <div className="flex-1">
+          <h1 className="text-lg font-semibold">Document Editor</h1>
+        </div>
+        <div className="flex-none">
+          <span className={`badge ${
+            isSaving ? 'badge-info' : 'badge-success'
+          } gap-2`}>
+            {isSaving ? 'Saving...' : 'Saved'}
+          </span>
+        </div>
+      </div>
+
+      <div className="editor-wrapper h-[calc(100vh-4rem)]">
+        <div ref={wrapperRef} className="h-full"></div>
+      </div>
+
+      <style jsx>{`
+        /* Custom Quill toolbar styling */
+        :global(.ql-toolbar.ql-snow) {
+          position: sticky;
+          top: 4rem;
+          z-index: 30;
+          border: none;
+          border-bottom: 1px solid hsl(var(--bc) / 0.2);
+          background-color: hsl(var(--b1));
+          padding: 1rem;
+        }
+        
+        :global(.ql-container.ql-snow) {
+          border: none;
+          background-color: hsl(var(--b1));
+          height: calc(100% - 72px);
+        }
+        
+        :global(.ql-editor) {
+          padding: 2rem;
+          min-height: 100%;
+          font-size: 1rem;
+          line-height: 1.75;
+        }
+
+        :global(.ql-editor p) {
+          margin-bottom: 1rem;
+        }
+
+        :global(.ql-editor h1) {
+          font-size: 2rem;
+          font-weight: 600;
+          margin-bottom: 1.5rem;
+        }
+
+        :global(.ql-editor h2) {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin-bottom: 1.25rem;
+        }
+
+        :global(.ql-toolbar button:hover) {
+          background-color: hsl(var(--bc) / 0.1);
+          border-radius: 0.25rem;
+        }
+
+        :global(.ql-formats) {
+          margin-right: 1rem !important;
+        }
+
+        .editor-wrapper {
+          display: flex;
+          flex-direction: column;
+          height: calc(100vh - 4rem);
+        }
+
+        /* Custom scrollbar */
+        :global(.ql-editor::-webkit-scrollbar) {
+          width: 8px;
+        }
+
+        :global(.ql-editor::-webkit-scrollbar-track) {
+          background: hsl(var(--b2));
+        }
+
+        :global(.ql-editor::-webkit-scrollbar-thumb) {
+          background: hsl(var(--bc) / 0.3);
+          border-radius: 4px;
+        }
+
+        :global(.ql-editor::-webkit-scrollbar-thumb:hover) {
+          background: hsl(var(--bc) / 0.4);
+        }
+      `}</style>
+    </div>
+  )
 }
