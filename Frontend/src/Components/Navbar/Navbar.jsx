@@ -107,6 +107,11 @@ const Navbar = () => {
                                     text="Admin Dashboard" 
                                 />
                             )}
+                            <NavItem 
+                                to="/home/userDashboard" 
+                                icon={<MdInfo />} 
+                                text="User Dashboard" 
+                            />
                         </>
                     )}
 

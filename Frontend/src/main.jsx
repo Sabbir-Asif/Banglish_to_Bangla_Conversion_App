@@ -18,6 +18,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import TextEditorMain from "./Components/TextEditor/TextEditorMain";
 import DatasetPage from "./Components/Dataset/DatasetPage";
 import Translator from "./Components/Translator/Translator";
+import UserDashboard from "./Pages/UserDashboard";
 
 
 const router = createBrowserRouter([
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "adminDashboard",
         element: <AdminDashboard />
+      },
+      {
+        path: "userDashboard",
+        element: <UserDashboard />
       },
       {
         path: "texteditor/*",
