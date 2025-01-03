@@ -11,7 +11,6 @@ import SignUp from "./Pages/SIgnUp";
 import SignIn from "./Pages/SIgnIn";
 import ForgotPassword from "./Pages/ForgotPassword";
 import AuthProvider from "./Components/Authentication/AuthProvider";
-import LlamaChat from "./Components/Chatbot/LlamaChat";
 
 
 const router = createBrowserRouter([
@@ -31,10 +30,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <LandingPage />,
     errorElement: <ErrorPage />
-  },
-  {
-    path: '/chat',
-    element: <LlamaChat />
   }
 ]);
 
