@@ -61,7 +61,7 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center w-full min-h-screen bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -87,7 +87,7 @@ const UserDashboard = () => {
 
   return (
     <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9] p-8 overflow-scroll">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full mx-auto space-y-8">
         {/* Header Section */}
         <div className="flex flex-col items-start space-y-2">
           <h1 className="text-4xl font-bold text-gray-900">
