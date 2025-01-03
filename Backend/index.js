@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-require("dotenv").config();
+require('dotenv').config();
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -9,7 +9,8 @@ const mongoConnection = require('./util/mongoConnection');
 const users = require('./User/userRouter');
 const trainData = require('./TrainData/DataTableRouter');
 const tempData = require('./TempData/TempDataRoutes');
-const document = require('./Document/DocumentRouter');
+const documentRouter = require('./Document/DocumentRouter');
+const { getDocument, updateDocument } = require('./Document/DocumentController');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -35,7 +36,17 @@ io.on('connection', (socket) => {
 
   // Handle document changes
   socket.on('document-change', (data) => {
-    socket.to(data.documentId).emit('receive-changes', data);
+    socket.to(data.documentId).emit('receive-changes', data);  // Emit changes to other users in the document room
+  });
+
+  // Save document content periodically or on-demand
+  socket.on('save-document', async (data) => {
+    try {
+      const updatedDocument = await updateDocument(data.documentId, data.content);
+      io.to(data.documentId).emit('document-saved', updatedDocument);  // Notify users that the document is saved
+    } catch (error) {
+      console.error('Error saving document:', error);
+    }
   });
 
   // Handle disconnection
@@ -53,10 +64,11 @@ mongoConnection();
 
 app.get('/', (req, res) => res.send('Server is running'));
 
+// Routes
 app.use('/api/users', users);
 app.use('/api/trainData', trainData);
 app.use('/api/tempData', tempData);
-app.use('/api/documents', document);
+app.use('/api/documents', documentRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
