@@ -18,8 +18,8 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import TextEditorMain from "./Components/TextEditor/TextEditorMain";
 import DatasetPage from "./Components/Dataset/DatasetPage";
 import Translator from "./Components/Translator/Translator";
-import UserDashboard from "./Pages/UserDashboard";
-
+import Documents from "./Components/Document/Documents";
+import DocumentEditor from "./Components/Document/DocumentEditor";
 
 const router = createBrowserRouter([
   {
@@ -56,10 +56,6 @@ const router = createBrowserRouter([
         element: <AdminDashboard />
       },
       {
-        path: "userDashboard",
-        element: <UserDashboard />
-      },
-      {
         path: "texteditor/*",
         element: <TextEditorMain />,
       },
@@ -70,11 +66,18 @@ const router = createBrowserRouter([
       {
         path: 'translate',
         element: <Translator />
+      },
+      {
+        path: 'documents',
+        element: <Documents />
+      },
+      {
+        path: 'document/:id',
+        element: <DocumentEditor />
       }
     ],
   },
 ]);
-
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
