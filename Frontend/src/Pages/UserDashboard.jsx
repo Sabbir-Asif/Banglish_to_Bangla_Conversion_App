@@ -26,12 +26,12 @@ const UserDashboard = () => {
     const fetchUserDatasets = async () => {
         try {
             // First get temp data (pending/review submissions)
-            const tempResponse = await axios.get(`/api/temp-data/search`, {
+            const tempResponse = await axios.get(`http://localhost:3000/api/tempData/search`, {
                 params: { userId: user._id }
             });
 
             // Then get approved data from the main DataTable
-            const approvedResponse = await axios.get('/api/data-table', {
+            const approvedResponse = await axios.get('http://localhost:3000/api/tempData/search?status=approved', {
                 params: { userId: user._id }
             });
 
