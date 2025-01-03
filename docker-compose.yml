@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80" # Map port 8080 on host to port 80 in container
+    container_name: frontend-service
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Map port 3000 on host to port 3000 in container
+    container_name: backend-service
+    env_file:
+      - ./backend/.env # Use environment variables from .env file
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-db
+    ports:
+      - "27017:27017" # Expose MongoDB (optional, for local access if needed)
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
