@@ -15,6 +15,7 @@ import Home from "./Pages/Home";
 import ChatPage from "./Components/Chat/ChatPage";
 import Banner from "./Components/Banner/Banner";
 import AdminDashboard from "./Pages/AdminDashboard";
+import TextEditorMain from "./Components/TextEditor/TextEditorMain";
 
 
 const router = createBrowserRouter([
@@ -50,7 +51,11 @@ const router = createBrowserRouter([
       {
         path: "adminDashboard",
         element: <AdminDashboard />
-      }
+      },
+      {
+        path: "texteditor",
+        element: <TextEditorMain />,
+      },
     ],
   },
 ]);
