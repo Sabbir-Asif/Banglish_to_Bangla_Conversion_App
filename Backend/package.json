@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",        
+    "dev": "nodemon index.js",      
+    "build": "npm run build",       
+    "vercel-build": "npm install" 
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["backend", "api", "express", "socket.io", "mongodb"],
+  "author": "Your Name <your.email@example.com>",
   "license": "ISC",
-  "description": "",
+  "description": "An Express.js backend with MongoDB, real-time communication, and AI integration.",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
@@ -19,8 +20,10 @@
     "helmet": "^8.0.0",
     "mongoose": "^8.9.3",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.9",
     "openai": "^4.77.0",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
