@@ -25,6 +25,7 @@ import Stories from "./Components/Stories/Stories";
 import StoriesPage from "./Components/Stories/StoriesPage";
 import WriterPage from "./Components/Writer/WriterPage";
 import WriterDetails from "./Components/Writer/WriterDetails"; 
+import PrivateRoute from "./Components/Authentication/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -46,59 +47,87 @@ const router = createBrowserRouter([
   },
   {
     path: "/home",
-    element: <Home />,
+    element: <PrivateRoute>
+      <Home />
+    </PrivateRoute>,
     children: [
       {
         path: "banner",
-        element: <Banner />
+        element: <PrivateRoute>
+          <Banner />
+        </PrivateRoute>
       },
       {
         path: "chat",
-        element: <ChatPage />,
+        element: <PrivateRoute>
+          <ChatPage />
+        </PrivateRoute>
       },
       {
         path: "adminDashboard",
-        element: <AdminDashboard />
+        element: <PrivateRoute>
+          <AdminDashboard />
+        </PrivateRoute>
       },
       {
         path: "userDashboard",
-        element: <UserDashboard />
+        element: <PrivateRoute>
+          <UserDashboard />
+        </PrivateRoute>
       },
       {
         path: "texteditor/*",
-        element: <TextEditorMain />,
+        element: <PrivateRoute>
+          <TextEditorMain />
+        </PrivateRoute>
       },
       {
         path: 'Dataset',
-        element: <DatasetPage />
+        element: <PrivateRoute>
+          <DatasetPage />
+        </PrivateRoute>
       },
       {
         path: 'translate',
-        element: <Translator />
+        element: <PrivateRoute>
+          <Translator />
+        </PrivateRoute>
       },
       {
         path: 'documents',
-        element: <Documents />
+        element: <PrivateRoute>
+          <Documents />
+        </PrivateRoute>
       },
       {
         path: 'document/:id',
-        element: <DocumentEditor />
+        element: <PrivateRoute>
+          <DocumentEditor />
+        </PrivateRoute>
       },
       {
         path: 'stories',
-        element: <Stories />
+        element: <PrivateRoute>
+          <Stories />
+        </PrivateRoute>
       },
       {
         path: 'stories/:id',
-        element: <StoriesPage /> 
+        element: <PrivateRoute>
+          <StoriesPage /> 
+        </PrivateRoute>
       },
       {
         path: 'writer',
-        element: <WriterPage />
+        element: <PrivateRoute>
+          <WriterPage />
+        </PrivateRoute>
       },
       {
         path: 'writer/:id',
-        element: <WriterDetails /> // Added writer details page
+        element: <PrivateRoute>
+          <WriterDetails />
+        </PrivateRoute>
       }
     ],
   },
