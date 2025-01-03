@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Search, Filter, X } from 'lucide-react';
 import StoriesCard from './StoriesCard';
 
 const Stories = () => {
@@ -111,7 +112,33 @@ const Stories = () => {
                 </div>
             )}
         </div>
-    );
+
+        {loading ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="bg-red-100 text-red-700 px-4 py-3 rounded-lg flex items-center">
+              <X className="w-5 h-5 mr-2" />
+              <span>{error}</span>
+            </div>
+          </div>
+        ) : documents.length === 0 ? (
+          <div className="text-center py-16">
+            <h3 className="text-2xl font-semibold text-gray-600">No stories found</h3>
+            <p className="text-gray-400 mt-2">Try adjusting your search terms or filters</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {documents.map((doc) => (
+              <StoriesCard key={doc._id} document={doc} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Stories;
