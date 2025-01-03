@@ -1,18 +1,36 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const User = require('../User/userModel');
+
 const tempDataSchema = new Schema({
-    banglish: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    english: {
+    data: [{
+        banglish: {
+            type: String,
+            required: true
+        },
+        english: {
+            type: String,
+            required: true
+        },
+        bangla: {
+            type: String,
+            required: true
+        }
+    }],
+    status: {
         type: String,
+        enum: ['approved', 'pending', 'declined'],
         required: true
     },
-    bangla: {
-        type: String,
-        required: true
+    lastModified: {
+        type: Date,
+        default: Date.now
     }
 }, { timestamps: true });
 

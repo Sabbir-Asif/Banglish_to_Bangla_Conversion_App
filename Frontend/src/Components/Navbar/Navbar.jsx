@@ -86,9 +86,14 @@ const Navbar = () => {
                                 text="Chat" 
                             />
                             <NavItem 
-                                to="/records" 
+                                to="home/records" 
                                 icon={<MdLeaderboard />} 
-                                text="Records" 
+                                text="Text Editor" 
+                            />
+                            <NavItem 
+                                to="/home/Dataset" 
+                                icon={<MdInfo />} 
+                                text="Dataset" 
                             />
                             {user.role === 'admin' && (
                                 <NavItem 

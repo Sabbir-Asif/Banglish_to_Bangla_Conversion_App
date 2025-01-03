@@ -3,7 +3,7 @@ const TempData = require('./TempDataModel');
 // Get all temp data entries
 exports.getAllTempData = async (req, res) => {
     try {
-        const entries = await TempData.find();
+        const entries = await TempData.find().populate('user');
         res.status(200).json(entries);
     } catch (error) {
         console.error(error);
@@ -17,11 +17,11 @@ exports.searchTempData = async (req, res) => {
         const { keyword } = req.query;
         const entries = await TempData.find({
             $or: [
-                { banglish: { $regex: keyword, $options: 'i' } },
-                { english: { $regex: keyword, $options: 'i' } },
-                { bangla: { $regex: keyword, $options: 'i' } }
+                { 'data.banglish': { $regex: keyword, $options: 'i' } },
+                { 'data.english': { $regex: keyword, $options: 'i' } },
+                { 'data.bangla': { $regex: keyword, $options: 'i' } }
             ]
-        });
+        }).populate('user');
 
         if (entries.length === 0) {
             return res.status(404).json({ message: 'No entries found matching the criteria' });
@@ -37,7 +37,7 @@ exports.searchTempData = async (req, res) => {
 // Get temp data entry by ID
 exports.getTempDataById = async (req, res) => {
     try {
-        const entry = await TempData.findById(req.params.id);
+        const entry = await TempData.findById(req.params.id).populate('user');
         if (!entry) {
             return res.status(404).json({ message: 'Entry not found' });
         }
@@ -51,8 +51,13 @@ exports.getTempDataById = async (req, res) => {
 // Create new temp data entry
 exports.createTempData = async (req, res) => {
     try {
-        const { banglish, english, bangla } = req.body;
-        const newEntry = new TempData({ banglish, english, bangla });
+        const { user, data, status } = req.body;
+        const newEntry = new TempData({
+            user,
+            data,
+            status,
+            lastModified: new Date()
+        });
         const savedEntry = await newEntry.save();
         res.status(201).json(savedEntry);
     } catch (error) {
@@ -66,9 +71,9 @@ exports.updateTempData = async (req, res) => {
     try {
         const updatedEntry = await TempData.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            { ...req.body, lastModified: new Date() },
             { new: true }
-        );
+        ).populate('user');
         if (!updatedEntry) {
             return res.status(404).json({ message: 'Entry not found' });
         }

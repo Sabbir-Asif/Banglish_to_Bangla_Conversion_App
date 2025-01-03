@@ -14,6 +14,7 @@ import AuthProvider from "./Components/Authentication/AuthProvider";
 import Home from "./Pages/Home";
 import ChatPage from "./Components/Chat/ChatPage";
 import Banner from "./Components/Banner/Banner";
+import AdminDashboard from "./Pages/AdminDashboard";
 
 
 const router = createBrowserRouter([
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
         path: "chat",
         element: <ChatPage />,
       },
+      {
+        path: "adminDashboard",
+        element: <AdminDashboard />
+      }
     ],
   },
 ]);
