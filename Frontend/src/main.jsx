@@ -20,6 +20,7 @@ import DatasetPage from "./Components/Dataset/DatasetPage";
 import Translator from "./Components/Translator/Translator";
 import Documents from "./Components/Document/Documents";
 import DocumentEditor from "./Components/Document/DocumentEditor";
+import UserDashboard from "./Pages/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "adminDashboard",
         element: <AdminDashboard />
+      },
+      {
+        path: "userDashboard",
+        element: <UserDashboard />
       },
       {
         path: "texteditor/*",
