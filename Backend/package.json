@@ -21,14 +21,7 @@
     "mongoose": "^8.9.3",
     "morgan": "^1.10.0",
     "openai": "^4.77.0",
-<<<<<<< HEAD
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8"
-=======
-    "socket.io": "^4.8.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
->>>>>>> 5d3e5b3bd3099f271b06de80f51b4e3e7ed9b169
   }
 }
