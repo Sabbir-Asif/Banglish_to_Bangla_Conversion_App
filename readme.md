@@ -96,6 +96,8 @@ A comprehensive tool to bridge the gap between Banglish (Bangla written in Engli
 
 ---
 
+![alt text](image.png)
+
 ## 🛠 Technology Stack
 
 - Frontend: ReactJS  
