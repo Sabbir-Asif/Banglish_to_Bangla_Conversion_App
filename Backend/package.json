@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",        
-    "dev": "nodemon index.js",      
-    "build": "npm run build",       
-    "vercel-build": "npm install" 
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "npm run build",
+    "vercel-build": "npm install"
   },
-  "keywords": ["backend", "api", "express", "socket.io", "mongodb"],
+  "keywords": [
+    "backend",
+    "api",
+    "express",
+    "socket.io",
+    "mongodb"
+  ],
   "author": "Your Name <your.email@example.com>",
   "license": "ISC",
   "description": "An Express.js backend with MongoDB, real-time communication, and AI integration.",
@@ -22,6 +28,7 @@
     "morgan": "^1.10.0",
     "openai": "^4.77.0",
     "socket.io": "^4.8.1",
-    "swagger-jsdoc": "^6.2.8"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
