@@ -11,6 +11,8 @@ const trainData = require('./TrainData/DataTableRouter');
 const tempData = require('./TempData/TempDataRoutes');
 const documentRouter = require('./Document/DocumentRouter');
 const { getDocument, updateDocument } = require('./Document/DocumentController');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -62,6 +64,46 @@ app.use(helmet());
 
 mongoConnection();
 
+// Swagger setup
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Banglish to Bangla conversion API',
+      version: '1.0.0',
+      description: 'API for managing users and documents',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: [],
+    }],
+  },
+  apis: [
+    './User/*.js',
+    './Document/*.js',
+    './TrainData/*.js',
+    './TempData/*.js'
+  ],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 app.get('/', (req, res) => res.send('Server is running'));
 
 // Routes
@@ -81,4 +123,5 @@ app.use((req, res) => {
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}...`);
+  console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
 });
