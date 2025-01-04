@@ -7,7 +7,7 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('dataset');
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9] p-4 md:p-8">
+        <div className="h-screen w-full overflow-y-scroll bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9] p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center space-y-4 mb-8">
                     <h2 className="text-4xl md:text-5xl font-bold font-exo">

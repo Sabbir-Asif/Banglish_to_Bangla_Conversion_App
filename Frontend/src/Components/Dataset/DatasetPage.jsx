@@ -93,7 +93,7 @@ const DatasetPage = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/tempData", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tempData`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -121,7 +121,7 @@ const DatasetPage = () => {
   const handleDownload = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/trainData");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/trainData`);
       if (!response.ok) {
         throw new Error("Failed to fetch data for download");
       }

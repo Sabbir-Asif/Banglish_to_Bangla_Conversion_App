@@ -14,7 +14,7 @@ const Stories = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:3000/api/documents?status=Published');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/documents?status=Published`);
             if (!response.ok) throw new Error('Failed to fetch documents');
             const data = await response.json();
             const publishedDocs = data.filter((doc) => doc.status === 'Published');
@@ -74,7 +74,7 @@ const Stories = () => {
     };
 
     return (
-        <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
+        <div className="flex h-screen overflow-y-scroll w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
             <div className="container mx-auto px-4 py-12">
                 {/* Header Section */}
                 <div className="text-center mb-12">

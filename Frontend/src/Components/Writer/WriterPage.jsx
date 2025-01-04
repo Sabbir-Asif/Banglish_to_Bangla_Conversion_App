@@ -12,7 +12,7 @@ const WriterPage = () => {
     const fetchWriters = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://localhost:3000/api/users');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`);
         if (!response.ok) throw new Error('Failed to fetch writers');
         const data = await response.json();
         setWriters(data);

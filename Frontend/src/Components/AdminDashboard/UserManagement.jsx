@@ -18,7 +18,7 @@ const UserManagement = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/users');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`);
             if (!response.ok) throw new Error('Failed to fetch users');
             const data = await response.json();
             setUsers(data);
@@ -36,7 +36,7 @@ const UserManagement = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/users/search?email=${searchQuery}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/search?email=${searchQuery}`);
             if (!response.ok) throw new Error('Search failed');
             const data = await response.json();
             setUsers(data);
@@ -48,7 +48,7 @@ const UserManagement = () => {
 
     const handleRoleChange = async (userId, newRole) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ role: newRole }),
