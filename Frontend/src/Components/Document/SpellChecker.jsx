@@ -15,11 +15,11 @@ const SpellChecker = ({ query }) => {
 
   // Spell-checking function
   const spellCheckWithGemini = async (text) => {
-    const prompt = `You are a Banglish (written using English alphabet) spell checker. Correct the spelling of the following text while maintaining the context and grammar. 
+    const prompt = `You are a great Banglish (written using English alphabet) spell checker. Correct the spelling of the following text while maintaining the context and grammar. 
 
 Text: "${text}"
 
-Please provide the corrected text without additional explanations.`;
+Please provide the corrected text in banglish (using English Alphabet) without additional explanations.`;
 
     try {
       const result = await model.generateContent(prompt);

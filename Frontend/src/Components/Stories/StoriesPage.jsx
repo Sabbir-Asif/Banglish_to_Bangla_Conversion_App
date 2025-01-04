@@ -140,7 +140,7 @@ const StoryPage = () => {
 
 
   return (
-    <article className="min-h-screen w-full bg-white">
+    <article className="h-screen overflow-y-scroll w-full bg-white">
       {/* Hero Section with Background */}
       <div className="bg-gradient-to-b from-orange-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

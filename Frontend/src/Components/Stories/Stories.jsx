@@ -74,7 +74,7 @@ const Stories = () => {
     };
 
     return (
-        <div className="flex h-screen w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
+        <div className="flex h-screen overflow-y-scroll w-full flex-col bg-gradient-to-br from-[#FFF7F4] via-white to-[#FFF0E9]">
             <div className="container mx-auto px-4 py-12">
                 {/* Header Section */}
                 <div className="text-center mb-12">
