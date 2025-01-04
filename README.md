@@ -2,6 +2,11 @@
 
 A comprehensive tool to bridge the gap between Banglish (Bangla written in English) and authentic Bangla, offering advanced translation, chatbot interaction, content creation, and language learning features.
 
+## Project Demonstration
+https://youtu.be/enjSW7mZueA
+
+## Live Application
+https://banglish-to-bangla-conversion-app-rh41.vercel.app/
 ## 🌟 Features
 
 ### Core Features
