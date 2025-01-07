@@ -5,8 +5,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm run build",
-    "vercel-build": "npm install"
+    "build": "vercel-build",
+    "vercel-build": "npm install",
+    "test": "jest"
   },
   "keywords": [
     "backend",
@@ -30,5 +31,9 @@
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }

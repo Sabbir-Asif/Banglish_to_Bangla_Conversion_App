@@ -121,7 +121,13 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-server.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on port ${port}...`);
-  console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
-});
+// Start the server only if this script is executed directly
+if (require.main === module) {
+  server.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on port ${port}...`);
+    console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
+  });
+}
+
+// Export app and server for testing
+module.exports = { app, server };
